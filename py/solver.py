@@ -2,7 +2,8 @@ from copy import deepcopy
 from datetime import datetime
 from sys import stdout
 
-class PuzzleSolver():
+
+class PuzzleSolver:
     """
     This class is the puzzle solver, using Piece, Board and Trans
     Its creation requires a Board, and a list of Piece it will try to put on the Board
@@ -19,28 +20,27 @@ class PuzzleSolver():
           - The number of tries used (tries to put a piece on a square)
           - The number of pieces successfully put on the puzzle board
     """
-    def __init__(self,board,pieces):
+
+    def __init__(self, board, pieces):
         self._board = board
         self._pieces = pieces
-        self._sides = "front"
         self._nbPieces = len(self._pieces)
         self._startTime = None
         self._nbTries = 0
         self._nbPcsPut = 0
         self._findAll = False
         self._stop = False
-        self._print=True
-        
-    def solve(self,findAll=False,printSol=True,sides="front"):
+        self._print = True
+
+    def solve(self, findAll=False, printSol=True):
         self._findAll = findAll
         self._print = printSol
-        self._sides = sides       
         solutions = []
         self._startTime = datetime.now()
-        solutions=self._solve(self._board,self._pieces,solutions)
-        return solutions,self._nbTries,self._nbPcsPut
-        
-    def _solve(self,board,pieces,solutions):
+        solutions = self._solve(self._board, self._pieces, solutions)
+        return solutions, self._nbTries, self._nbPcsPut
+
+    def _solve(self, board, pieces, solutions):
         nbPcs = len(pieces)
         if nbPcs:
             pos = board.nextAvailablePos()
@@ -50,33 +50,55 @@ class PuzzleSolver():
                     relTrans = piece.relevantTrans()
                     for trans in relTrans:
                         if nbPcs == self._nbPieces and not self._stop:
-                            execDuration = str(datetime.now()-self._startTime)
-                            if execDuration.rfind('.') != -1:
-                                execDuration = execDuration[:execDuration.rfind('.')]
-                            stdout.write("\r{0} - {1:.2f}% - {2} sol. over {3} pcs put with {4} tested combi.".format(\
-                                    execDuration,\
-                                    ((pieces.index(piece)*len(piece)*len(relTrans))+(origin*len(relTrans))+relTrans.index(trans))/(nbPcs*len(piece)*len(relTrans))*100,\
-                                    len(solutions),\
+                            execDuration = str(datetime.now() - self._startTime)
+                            if execDuration.rfind(".") != -1:
+                                execDuration = execDuration[: execDuration.rfind(".")]
+                            stdout.write(
+                                "\r{0} - {1:.2f}% - {2} sol. over {3} pcs put with {4} tested combi.".format(
+                                    execDuration,
+                                    (
+                                        (
+                                            pieces.index(piece)
+                                            * len(piece)
+                                            * len(relTrans)
+                                        )
+                                        + (origin * len(relTrans))
+                                        + relTrans.index(trans)
+                                    )
+                                    / (nbPcs * len(piece) * len(relTrans))
+                                    * 100,
+                                    len(solutions),
                                     self._nbPcsPut,
-                                    self._nbTries\
-                                    )\
+                                    self._nbTries,
                                 )
+                            )
                             stdout.flush()
-                        if  not self._stop and ( (self._sides=="front" and trans.isFront()) or (self._sides=="back" and trans.isBack()) or self._sides=="both"):
+                        # Check sides of the current piece
+                        if not self._stop and (
+                            (piece.sides == "front" and trans.isFront())
+                            or (piece.sides == "back" and trans.isBack())
+                            or piece.sides == "both"
+                        ):
                             piece.transform(trans)
-                            newBoard = board.putPiece(piece,pos)
+                            newBoard = board.putPiece(piece, pos)
                             self._nbTries += 1
                             if newBoard is not None:
                                 self._nbPcsPut += 1
-                                newPieces=deepcopy(pieces)
+                                newPieces = deepcopy(pieces)
                                 newPieces.remove(piece)
-                                solutions=self._solve(newBoard,newPieces,solutions)
+                                solutions = self._solve(newBoard, newPieces, solutions)
             if nbPcs == self._nbPieces:
-                    print("\n")#to cleanely end same line print above
+                print("\n")
         else:
-            if self._print == True:
-                print("\nSolution found in {} after testing {} combinations and putting {} pieces:".format(str(datetime.now()-self._startTime)[:-7],self._nbTries,self._nbPcsPut))
-                print(board,flush=True)
+            if self._print:
+                print(
+                    "\nSolution found in {} after testing {} combinations and putting {} pieces:".format(
+                        str(datetime.now() - self._startTime)[:-7],
+                        self._nbTries,
+                        self._nbPcsPut,
+                    )
+                )
+                print(board, flush=True)
             if not self._findAll:
                 self._stop = True
             solutions.append(board)

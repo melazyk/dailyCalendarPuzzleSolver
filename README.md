@@ -2,6 +2,37 @@
 
 This repository contains a generic tetris like puzzle solver in python, and a (little less) generic tetris like puzzle solver in C++.
 
+## Quick Start
+
+### Running Tests
+
+```bash
+# Show all available commands
+make help
+
+# Run all tests with coverage
+make test
+
+# Run only fast tests (~6s)
+make test-fast
+
+# Run tests with detailed coverage report
+make test-cov
+
+# Clean temporary files
+make clean
+```
+
+### Installation
+
+```bash
+# Install development dependencies
+make install
+
+# Or directly via pip
+pip install -r requirements-dev.txt
+```
+
 Four examples of puzzle solvers are provided with the python implementation, all using the generic puzzle.py and solver.py files.
 
 These four examples of puzzles are :
@@ -41,10 +72,10 @@ The python code has been splitted into its generic and specific parts to provide
 
 Python implementation ask for the date of the puzzle to solve in a prompt.
 
-C++ implementation takes the date in command line with 3 numbers : 
+C++ implementation takes the date in command line with 3 numbers :
 
  1. week day number from 1 to 7
- 2. month day number from 1 to 31 
+ 2. month day number from 1 to 31
  3. month number from 1 to 12.
 
 C++ implementation can also print all solutions of one date in a single line formatted to be readable with python json library (option 'i'), turn upside down some pieces when looking for solutions (add the list of pieces numbers from 1 to 10 as arguments), or use back side of the pieces as base one (option "s").
@@ -57,7 +88,7 @@ Here is an example of the python multiprocesses solver execution on a 4 cores CP
     End of process 3 after 0:00:00 with 0 sol. found using 162 tries and putting 1 pieces
     End of process 1 after 0:00:00 with 0 sol. found using 162 tries and putting 1 pieces
     End of process 5 after 0:01:32 with 0 sol. found using 111514 tries and putting 1945 pieces
-    
+
     Solution found by process 6 in 0:01:38 after testing 120279 combinations and putting 2373 pieces:
      _ _ _ _ _ _
     |_  |_|_   _|
@@ -93,7 +124,7 @@ And here is an example of the C++ implementation use for the same date on the sa
     | |_ _ _|_|_|_|
     |_ _ _ _|_|   |
             |_ _ _|
-    
+
     1 solutions found after 3026228 tries for Monday 27  March
     End of program reached,  execution duration: 9 seconds
 
@@ -127,3 +158,49 @@ It is a simple square board in which tetris like pieces must fit.
 The version created to implement this solver is this one:
 
 ![HEMA puzzle](img/hemapuzzle.jpeg)
+
+
+## Testing
+
+This project includes comprehensive test coverage for the Python implementation.
+
+### Test Structure
+
+```
+tests/
+├── conftest.py           # Shared fixtures
+├── test_solver.py        # Tests for PuzzleSolver (7 tests)
+├── test_multithreads.py  # Tests for MultiThreadPuzzleSolver (6 tests)
+└── README.md             # Detailed testing documentation
+```
+
+### Running Tests
+
+```bash
+# All tests with coverage report
+make test
+
+# Fast tests only (skip slow integration tests)
+make test-fast
+
+# Detailed coverage report
+make test-cov
+
+# Run tests in parallel (faster)
+make test-parallel
+
+# Generate and open HTML coverage report
+make test-html
+```
+
+### Test Coverage
+
+Current coverage: **64.81%**
+- `puzzle.py`: 96.32%
+- `solver.py`: 96.30%
+- `multithreadssolver.py`: 41.35%
+
+See [tests/README.md](tests/README.md) for more detailed testing documentation.
+
+---
+
