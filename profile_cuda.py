@@ -78,7 +78,7 @@ def CreatePieces():
 class ProfiledSolver(PuzzleSolver):
     def __init__(self, board, pieces):
         super().__init__(board, pieces)
-        self.time_encode = 0.0  # Now only initial preload
+        self.time_encode = 0.0
         self.time_bitmask = 0.0
         self.time_h2d = 0.0
         self.time_kernel = 0.0
@@ -94,18 +94,15 @@ class ProfiledSolver(PuzzleSolver):
             if pos is None:
                 return solutions
 
-            # Build candidate indices from piece ranges
-            cand_indices = []
-            for piece in pieces:
-                start_idx, count = self._piece_ranges[id(piece)]
-                cand_indices.extend(range(start_idx, start_idx + count))
+            # Time candidate encoding
+            t0 = time.perf_counter()
+            from cuda_solver import _encode_candidates
+            offsets_list, lengths_list, meta, max_len = _encode_candidates(pieces, len(board._board[0]))
+            N = len(lengths_list)
+            self.time_encode += time.perf_counter() - t0
 
-            N = len(cand_indices)
             if N == 0:
                 return solutions
-
-            self._nbTries += N
-            self.total_candidates += N
 
             # Time bitmask creation
             t0 = time.perf_counter()
@@ -116,13 +113,21 @@ class ProfiledSolver(PuzzleSolver):
             base_idx = pos_abs_y * width + pos_abs_x
             self.time_bitmask += time.perf_counter() - t0
 
-            # Time H2D transfer (only indices + mask now)
+            self._nbTries += N
+            self.total_candidates += N
+
+            # Time H2D transfer
             t0 = time.perf_counter()
-            self._h_candidate_indices[:N] = cand_indices
-            self._d_candidate_indices[:N].copy_to_device(self._h_candidate_indices[:N])
+            self._ensure_host_buffers(N, max_len)
+            for i, offs in enumerate(offsets_list):
+                self._h_offsets[i, :len(offs)] = offs
+            self._h_lengths[:N] = lengths_list
+
+            self._ensure_buffers(N, max_len)
+            h_offsets_flat = self._h_offsets[:N, :max_len].reshape(N * max_len)
+            self._d_offsets_flat[:N * max_len].copy_to_device(h_offsets_flat)
+            self._d_lengths[:N].copy_to_device(self._h_lengths[:N])
             self._d_mask_words.copy_to_device(mask)
-            self._h_valid_count[0] = 0
-            self._d_valid_count.copy_to_device(self._h_valid_count)
             self.time_h2d += time.perf_counter() - t0
 
             # Time kernel execution
@@ -130,53 +135,44 @@ class ProfiledSolver(PuzzleSolver):
             blocks = (N + threads_per_block - 1) // threads_per_block
 
             t0 = time.perf_counter()
-            from cuda_solver import _kernel_check_candidates_preloaded
-            _kernel_check_candidates_preloaded[blocks, threads_per_block](
+            from cuda_solver import _kernel_check_candidates
+            _kernel_check_candidates[blocks, threads_per_block](
                 self._d_mask_words, width, height, base_idx,
-                self._d_all_offsets,
-                self._d_all_lengths,
-                self._d_candidate_indices[:N],
-                self._d_results[:N],
-                self._d_valid_indices,
-                self._d_valid_count
+                self._d_offsets_flat,
+                max_len,
+                self._d_lengths[:N],
+                self._d_valids[:N]
             )
             self.time_kernel += time.perf_counter() - t0
             self.kernel_calls += 1
 
-            # Time D2H transfer (only valid count + indices)
+            # Time D2H transfer
             t0 = time.perf_counter()
-            self._d_valid_count.copy_to_host(self._h_valid_count)
-            num_valid = self._h_valid_count[0]
-
-            if num_valid > 0:
-                self._d_valid_indices[:num_valid].copy_to_host(self._h_valid_indices[:num_valid])
+            valids_host = self._d_valids[:N].copy_to_host()
             self.time_d2h += time.perf_counter() - t0
 
-            # Time placement logic (not recursive calls)
-            t0 = time.perf_counter()
-            if num_valid > 0:
-                for idx in self._h_valid_indices[:num_valid]:
-                    cand_idx = cand_indices[idx]
-                    piece_i, origin_i, vecs_i = self._all_meta[cand_idx]
-
+            # Time placement (but NOT recursion - that's measured separately)
+            for i, is_valid in enumerate(valids_host):
+                if is_valid:
+                    piece_i, origin_i, vecs_i = meta[i]
                     from cuda_solver import PlacementPiece
+
+                    t0 = time.perf_counter()
                     piece_view = PlacementPiece(piece_i.name, vecs_i)
                     piece_view.setOrigin(origin_i)
-
                     newBoard = board.putPiece(piece_view, pos)
+                    self.time_placement += time.perf_counter() - t0
+
                     if newBoard is not None:
                         self._nbPcsPut += 1
+                        t0 = time.perf_counter()
                         newPieces = pieces.copy()
                         try:
                             newPieces.remove(piece_i)
                         except ValueError:
                             newPieces = [p for p in newPieces if p.name != piece_i.name]
                         self.time_placement += time.perf_counter() - t0
-                        # Recursive call - don't include in placement time
                         solutions = self._solve(newBoard, newPieces, solutions)
-                        t0 = time.perf_counter()  # Reset timer after recursion
-            else:
-                self.time_placement += time.perf_counter() - t0
         else:
             if self._print:
                 print(f"\nSolution found after {self._nbTries} tries")

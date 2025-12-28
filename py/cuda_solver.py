@@ -97,7 +97,7 @@ def _encode_candidates(
                     cy += v.y
                     coords.append((cx, cy))
 
-                offs = [cy * board_width + cx for (cx, cy) in coords]
+                offs = [(cy * board_width + cx) for (cx, cy) in coords]
                 entries.append((origin, vecs, offs))
             width_cache[board_width] = entries
             cached_for_width = entries
@@ -145,8 +145,8 @@ def _kernel_check_candidates(
     width: int,
     height: int,
     base_idx: int,  # flattened index of anchor cell
-    offsets_flat: np.ndarray,  # (N*Lmax,) flattened offsets relative to anchor
-    stride_L: int,  # Lmax used to index into flat array
+    offsets_flat: np.ndarray,  # (N × max_len) padded offsets
+    max_len: int,
     lengths: np.ndarray,  # (N,)
     results: np.ndarray,  # (N,) – 1 valid, 0 invalid
 ) -> None:
@@ -156,9 +156,10 @@ def _kernel_check_candidates(
 
     total_cells = width * height
     L = lengths[i]
+    offset_base = i * max_len
 
     for j in range(L):
-        cell_idx = base_idx + offsets_flat[i * stride_L + j]
+        cell_idx = base_idx + offsets_flat[offset_base + j]
         if cell_idx < 0 or cell_idx >= total_cells:
             results[i] = 0
             return
@@ -243,22 +244,21 @@ class PuzzleSolver:
         self._d_lengths = None
         self._d_valids = None
         self._cap_N = 0
-        self._cap_L = 0
+        self._cap_max_len = 0
         # Fixed 3-word mask buffer
         self._d_mask_words = cuda.device_array(3, dtype=np.uint64)
         # Host buffer pool (pinned for faster H2D copies)
         self._h_offsets = None
         self._h_lengths = None
         self._cap_h_N = 0
-        self._cap_h_L = 0
+        self._cap_h_max_len = 0
 
     def _ensure_buffers(self, N: int, max_len: int):
         # Ensure device buffers have enough capacity; allocate if needed
-        need_offsets = (self._d_offsets_flat is None) or (N > self._cap_N) or (max_len > self._cap_L)
-        if need_offsets:
+        if (self._d_offsets_flat is None) or (N > self._cap_N) or (max_len > self._cap_max_len):
             self._cap_N = max(N, self._cap_N or N)
-            self._cap_L = max(max_len, self._cap_L or max_len)
-            self._d_offsets_flat = cuda.device_array(self._cap_N * self._cap_L, dtype=np.int32)
+            self._cap_max_len = max(max_len, self._cap_max_len or max_len)
+            self._d_offsets_flat = cuda.device_array(self._cap_N * self._cap_max_len, dtype=np.int32)
         if (self._d_lengths is None) or (N > self._cap_N):
             self._d_lengths = cuda.device_array(self._cap_N, dtype=np.int32)
         if (self._d_valids is None) or (N > self._cap_N):
@@ -266,12 +266,12 @@ class PuzzleSolver:
 
     def _ensure_host_buffers(self, N: int, max_len: int):
         # Host-side pool to reduce allocations (pinned for faster transfers)
-        if (self._h_offsets is None) or (N > self._cap_h_N) or (max_len > self._cap_h_L):
+        if (self._h_offsets is None) or (N > self._cap_h_N) or (max_len > self._cap_h_max_len):
             self._cap_h_N = max(N, self._cap_h_N or N)
-            self._cap_h_L = max(max_len, self._cap_h_L or max_len)
-            self._h_offsets = cuda.pinned_array((self._cap_h_N, self._cap_h_L), dtype=np.int32)
+            self._cap_h_max_len = max(max_len, self._cap_h_max_len or max_len)
+            self._h_offsets = cuda.pinned_array((self._cap_h_N, self._cap_h_max_len), dtype=np.int32)
         if (self._h_lengths is None) or (N > self._cap_h_N):
-            self._h_lengths = cuda.pinned_array((self._cap_h_N,), dtype=np.int32)
+            self._h_lengths = cuda.pinned_array(self._cap_h_N, dtype=np.int32)
 
     def solve(self, findAll: bool = False, printSol: bool = True):
         self._findAll = findAll
@@ -301,20 +301,20 @@ class PuzzleSolver:
 
             self._nbTries += N
 
-            # Ensure host buffers
+            # Fill host buffers with padded format
             self._ensure_host_buffers(N, max_len)
             for i, offs in enumerate(offsets_list):
-                self._h_offsets[i, : len(offs)] = offs
+                self._h_offsets[i, :len(offs)] = offs
             self._h_lengths[:N] = lengths_list
 
-            # Ensure and fill device buffers
+            # Copy to device
             self._ensure_buffers(N, max_len)
             h_offsets_flat = self._h_offsets[:N, :max_len].reshape(N * max_len)
-            self._d_offsets_flat[: N * max_len].copy_to_device(h_offsets_flat)
+            self._d_offsets_flat[:N * max_len].copy_to_device(h_offsets_flat)
             self._d_lengths[:N].copy_to_device(self._h_lengths[:N])
             self._d_mask_words.copy_to_device(mask)
 
-            threads_per_block = 512  # larger block size for better occupancy
+            threads_per_block = 512
             blocks = (N + threads_per_block - 1) // threads_per_block
 
             _kernel_check_candidates[blocks, threads_per_block](
@@ -325,8 +325,10 @@ class PuzzleSolver:
                 self._d_valids[:N]
             )
 
+            # Copy results back
             valids_host = self._d_valids[:N].copy_to_host()
 
+            # Process valid placements
             for i, is_valid in enumerate(valids_host):
                 if is_valid:
                     piece_i, origin_i, vecs_i = meta[i]
