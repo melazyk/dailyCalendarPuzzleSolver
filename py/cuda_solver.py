@@ -243,6 +243,7 @@ def _kernel_check_candidates_preloaded_compact_out(
     idx = cuda.atomic.add(valid_count, 0, 1)
     valid_indices[idx] = i
 
+
 @cuda.jit
 def _kernel_check_candidates_preloaded_old(
     board_bits: np.ndarray,  # uint64 bitmask (3,)
@@ -412,7 +413,7 @@ class PuzzleSolver:
         # Fill and copy to GPU
         h_all_offsets = np.zeros(total_candidates * max_len, dtype=np.int32)
         for i, offs in enumerate(all_offsets):
-            h_all_offsets[i * max_len : i * max_len + len(offs)] = offs
+            h_all_offsets[i * max_len: i * max_len + len(offs)] = offs
 
         self._d_all_offsets.copy_to_device(h_all_offsets)
         self._d_all_lengths.copy_to_device(np.array(all_lengths, dtype=np.int32))
@@ -500,23 +501,23 @@ class PuzzleSolver:
             for k in range(num_valid):
                 i = int(self._h_valid_indices[k])
                 cand_idx = cand_indices[i]
-                    piece_idx, origin_i, vecs_i = self._all_meta[cand_idx]
-                    piece_i = self._pieces[piece_idx]
+                piece_idx, origin_i, vecs_i = self._all_meta[cand_idx]
+                piece_i = self._pieces[piece_idx]
 
-                    # Use lightweight placement view to avoid deepcopy costs
-                    piece_view = PlacementPiece(piece_i.name, vecs_i)
-                    piece_view.setOrigin(origin_i)
+                # Use lightweight placement view to avoid deepcopy costs
+                piece_view = PlacementPiece(piece_i.name, vecs_i)
+                piece_view.setOrigin(origin_i)
 
-                    newBoard = board.putPiece(piece_view, pos)
-                    if newBoard is not None:
-                        self._nbPcsPut += 1
-                        # Remove by identity
-                        newPieces = pieces.copy()
-                        try:
-                            newPieces.remove(piece_i)
-                        except ValueError:
-                            newPieces = [p for p in newPieces if p.name != piece_i.name]
-                        solutions = self._solve(newBoard, newPieces, solutions)
+                newBoard = board.putPiece(piece_view, pos)
+                if newBoard is not None:
+                    self._nbPcsPut += 1
+                    # Remove by identity
+                    newPieces = pieces.copy()
+                    try:
+                        newPieces.remove(piece_i)
+                    except ValueError:
+                        newPieces = [p for p in newPieces if p.name != piece_i.name]
+                    solutions = self._solve(newBoard, newPieces, solutions)
         else:
             if self._print:
                 print(
