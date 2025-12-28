@@ -324,6 +324,9 @@ class PuzzleSolver:
         self._cap_h_N = 0
         self._cap_h_max_len = 0
 
+        # CUDA stream for async copies and kernel launches
+        self._stream = cuda.stream()
+
         # Preload all transformations to GPU
         self._preload_all_candidates()
 
@@ -469,10 +472,10 @@ class PuzzleSolver:
             pos_abs_y = board._origin.y + pos.y
             base_idx = pos_abs_y * width + pos_abs_x
 
-            # Copy only indices and mask to GPU
+            # Copy only indices and mask to GPU (async)
             self._h_candidate_indices[:N] = cand_indices
-            self._d_candidate_indices[:N].copy_to_device(self._h_candidate_indices[:N])
-            self._d_mask_words.copy_to_device(mask)
+            self._d_candidate_indices[:N].copy_to_device(self._h_candidate_indices[:N], stream=self._stream)
+            self._d_mask_words.copy_to_device(mask, stream=self._stream)
 
             threads_per_block = 512
             blocks = (N + threads_per_block - 1) // threads_per_block
@@ -481,7 +484,7 @@ class PuzzleSolver:
             self._h_valid_count[0] = 0
             self._d_valid_count.copy_to_device(self._h_valid_count)
 
-            _kernel_check_candidates_preloaded_compact_out[blocks, threads_per_block](
+            _kernel_check_candidates_preloaded_compact_out[blocks, threads_per_block, self._stream](
                 self._d_mask_words, width, height, base_idx,
                 self._d_all_offsets,
                 self._all_max_len,
@@ -492,10 +495,13 @@ class PuzzleSolver:
             )
 
             # Copy back number of valid indices
-            self._d_valid_count.copy_to_host(self._h_valid_count)
+            self._d_valid_count.copy_to_host(self._h_valid_count, stream=self._stream)
+            # Ensure count is available before conditional index copy
+            self._stream.synchronize()
             num_valid = int(self._h_valid_count[0])
             if num_valid > 0:
-                self._d_valid_indices[:num_valid].copy_to_host(self._h_valid_indices[:num_valid])
+                self._d_valid_indices[:num_valid].copy_to_host(self._h_valid_indices[:num_valid], stream=self._stream)
+                self._stream.synchronize()
 
             # Process valid placements
             for k in range(num_valid):
