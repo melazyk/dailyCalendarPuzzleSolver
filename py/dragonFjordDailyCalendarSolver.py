@@ -1,5 +1,4 @@
 from puzzle import Vector, Piece, Board
-from solver import PuzzleSolver
 from datetime import datetime
 import argparse
 import sys
@@ -44,7 +43,7 @@ def CreatePieces():
     BigS = Piece(
         shape=[Vector(1, 0), Vector(0, 1), Vector(0, 1), Vector(1, 0)],
         name="S",
-        sides="both"
+        sides="back"
     )  # big S shaped
     SmallsTail = Piece(
         shape=[Vector(1, 0), Vector(0, 1), Vector(1, 0), Vector(1, 0)],
@@ -97,6 +96,11 @@ if __name__ == "__main__":
         action="store_true",
         help="Print puzzle pieces information before solving"
     )
+    parser.add_argument(
+        "--cuda",
+        action="store_true",
+        help="Use CUDA solver (cuda_solver.PuzzleSolver); CPU solver is default"
+    )
     args = parser.parse_args()
 
     pieces = CreatePieces()
@@ -121,6 +125,16 @@ if __name__ == "__main__":
     else:
         prettyDate = date.strftime("%A, %d %B %Y")
         puzzle = GenerateBoard(date)
+        # Choose solver backend
+        if args.cuda:
+            try:
+                from cuda_solver import PuzzleSolver  # noqa: WPS433
+            except Exception as e:
+                print("CUDA solver unavailable:", e)
+                sys.exit(1)
+        else:
+            from solver import PuzzleSolver  # noqa: WPS433
+
         solver = PuzzleSolver(puzzle, pieces)
         print("Start solving puzzle for {}".format(prettyDate))
         starttime = datetime.now()
