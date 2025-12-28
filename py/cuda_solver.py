@@ -301,6 +301,7 @@ class PuzzleSolver:
         self._findAll = False
         self._stop = False
         self._print = True
+        self._printProgress = True
         # Enforce CUDA device presence – no CPU fallback.
         try:
             available = bool(getattr(cuda, "is_available", lambda: False)())
@@ -434,9 +435,10 @@ class PuzzleSolver:
         self._h_valid_indices = cuda.pinned_array(total_candidates, dtype=np.int32)
         self._h_valid_count = cuda.pinned_array(1, dtype=np.int32)
 
-    def solve(self, findAll: bool = False, printSol: bool = True):
+    def solve(self, findAll: bool = False, printSol: bool = True, printProgress: bool = True):
         self._findAll = findAll
         self._print = printSol
+        self._printProgress = printProgress
         solutions: List[Board] = []
         self._startTime = datetime.now()
         solutions = self._solve(self._board, self._pieces, solutions)

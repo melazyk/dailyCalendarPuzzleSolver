@@ -31,10 +31,12 @@ class PuzzleSolver:
         self._findAll = False
         self._stop = False
         self._print = True
+        self._printProgress = True
 
-    def solve(self, findAll=False, printSol=True):
+    def solve(self, findAll=False, printSol=True, printProgress=True):
         self._findAll = findAll
         self._print = printSol
+        self._printProgress = printProgress
         solutions = []
         self._startTime = datetime.now()
         solutions = self._solve(self._board, self._pieces, solutions)
@@ -49,7 +51,7 @@ class PuzzleSolver:
                     piece.setOrigin(origin)
                     relTrans = piece.relevantTrans()
                     for trans in relTrans:
-                        if nbPcs == self._nbPieces and not self._stop:
+                        if nbPcs == self._nbPieces and not self._stop and self._printProgress:
                             execDuration = str(datetime.now() - self._startTime)
                             if execDuration.rfind(".") != -1:
                                 execDuration = execDuration[: execDuration.rfind(".")]
