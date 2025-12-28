@@ -175,6 +175,42 @@ def _kernel_check_candidates(
 
 @cuda.jit
 def _kernel_check_candidates_preloaded(
+    board_bits: np.ndarray,
+    width: int,
+    height: int,
+    base_idx: int,
+    all_offsets: np.ndarray,  # All preloaded offsets (total_cand × max_len)
+    max_len: int,
+    all_lengths: np.ndarray,  # Lengths for all candidates
+    candidate_indices: np.ndarray,  # Indices of candidates to check
+    results: np.ndarray,
+) -> None:
+    i = cuda.grid(1)
+    if i >= candidate_indices.shape[0]:
+        return
+
+    cand_idx = candidate_indices[i]
+    total_cells = width * height
+    L = all_lengths[cand_idx]
+    offset_base = cand_idx * max_len
+
+    for j in range(L):
+        cell_idx = base_idx + all_offsets[offset_base + j]
+        if cell_idx < 0 or cell_idx >= total_cells:
+            results[i] = 0
+            return
+
+        word = cell_idx >> 6
+        bit = cell_idx & 63
+        if (board_bits[word] >> bit) & 1 == 0:
+            results[i] = 0
+            return
+
+    results[i] = 1
+
+
+@cuda.jit
+def _kernel_check_candidates_preloaded_old(
     board_bits: np.ndarray,  # uint64 bitmask (3,)
     width: int,
     height: int,
@@ -253,6 +289,9 @@ class PuzzleSolver:
         self._cap_h_N = 0
         self._cap_h_max_len = 0
 
+        # Preload all transformations to GPU
+        self._preload_all_candidates()
+
     def _ensure_buffers(self, N: int, max_len: int):
         # Ensure device buffers have enough capacity; allocate if needed
         if (self._d_offsets_flat is None) or (N > self._cap_N) or (max_len > self._cap_max_len):
@@ -273,6 +312,85 @@ class PuzzleSolver:
         if (self._h_lengths is None) or (N > self._cap_h_N):
             self._h_lengths = cuda.pinned_array(self._cap_h_N, dtype=np.int32)
 
+    def _preload_all_candidates(self):
+        """Preload all piece transformations to GPU once."""
+        # Build mapping: piece_idx -> list of candidate indices
+        self._piece_ranges = {}  # piece_idx -> (start_idx, count)
+        all_offsets = []
+        all_lengths = []
+        all_meta = []  # (piece_idx, origin, vecs)
+
+        board_width = len(self._board._board[0])
+
+        for piece_idx, piece in enumerate(self._pieces):
+            start_idx = len(all_offsets)
+
+            # Ensure piece has cached candidates
+            if not hasattr(piece, '_cached_candidates') or piece._cached_candidates is None:
+                piece._cached_candidates = []
+                for trans in piece._relevantTrans:
+                    transformed = piece._transform(trans)
+                    for origin in range(len(transformed) + 1):
+                        piece._cached_candidates.append((origin, transformed))
+
+            # Get or compute offset cache for this width
+            if not hasattr(piece, '_cached_offsets'):
+                piece._cached_offsets = {}
+
+            if board_width not in piece._cached_offsets:
+                entries = []
+                for origin, vecs in piece._cached_candidates:
+                    coords = [(0, 0)]
+                    cx = cy = 0
+                    for idx in range(origin - 1, -1, -1):
+                        v = vecs[idx]
+                        cx -= v.x
+                        cy -= v.y
+                        coords.append((cx, cy))
+                    cx = cy = 0
+                    for idx in range(origin, len(vecs)):
+                        v = vecs[idx]
+                        cx += v.x
+                        cy += v.y
+                        coords.append((cx, cy))
+                    offs = [(cy * board_width + cx) for (cx, cy) in coords]
+                    entries.append((origin, vecs, offs))
+                piece._cached_offsets[board_width] = entries
+
+            cached_for_width = piece._cached_offsets[board_width]
+
+            for origin, vecs, offs in cached_for_width:
+                all_meta.append((piece_idx, origin, vecs))
+                all_offsets.append(offs)
+                all_lengths.append(len(offs))
+
+            count = len(cached_for_width)
+            self._piece_ranges[piece_idx] = (start_idx, count)
+
+        # Compute max_len and prepare padded format
+        max_len = max(all_lengths) if all_lengths else 0
+        total_candidates = len(all_offsets)
+
+        # Allocate GPU memory for all candidates
+        self._d_all_offsets = cuda.device_array(total_candidates * max_len, dtype=np.int32)
+        self._d_all_lengths = cuda.device_array(total_candidates, dtype=np.int32)
+
+        # Fill and copy to GPU
+        h_all_offsets = np.zeros(total_candidates * max_len, dtype=np.int32)
+        for i, offs in enumerate(all_offsets):
+            h_all_offsets[i * max_len : i * max_len + len(offs)] = offs
+
+        self._d_all_offsets.copy_to_device(h_all_offsets)
+        self._d_all_lengths.copy_to_device(np.array(all_lengths, dtype=np.int32))
+
+        self._all_meta = all_meta
+        self._all_max_len = max_len
+
+        # Allocate buffers for candidate indices
+        self._h_candidate_indices = cuda.pinned_array(total_candidates, dtype=np.int32)
+        self._d_candidate_indices = cuda.device_array(total_candidates, dtype=np.int32)
+        self._d_results = cuda.device_array(total_candidates, dtype=np.int32)
+
     def solve(self, findAll: bool = False, printSol: bool = True):
         self._findAll = findAll
         self._print = printSol
@@ -282,56 +400,62 @@ class PuzzleSolver:
         return solutions, self._nbTries, self._nbPcsPut
 
     def _solve(self, board: Board, pieces: List[Piece], solutions: List[Board]):
-        """Depth-first search using bitboard kernel."""
+        """Depth-first search using preloaded candidates on GPU."""
         nbPcs = len(pieces)
         if nbPcs:
             pos = board.nextAvailablePos()
             if pos is None:
                 return solutions
-            # Encode candidates for current level
-            offsets_list, lengths_list, meta, max_len = _encode_candidates(pieces, len(board._board[0]))
-            N = len(lengths_list)
+
+            # Build list of candidate indices for current pieces
+            # Map each piece to its index in self._pieces
+            piece_to_idx = {id(self._pieces[i]): i for i in range(len(self._pieces))}
+
+            cand_indices = []
+            for piece in pieces:
+                piece_idx = piece_to_idx.get(id(piece))
+                if piece_idx is not None:
+                    start_idx, count = self._piece_ranges[piece_idx]
+                    cand_indices.extend(range(start_idx, start_idx + count))
+
+            N = len(cand_indices)
             if N == 0:
                 return solutions
+
+            self._nbTries += N
 
             mask, width, height = _board_to_bitmask(board)
             pos_abs_x = board._origin.x + pos.x
             pos_abs_y = board._origin.y + pos.y
             base_idx = pos_abs_y * width + pos_abs_x
 
-            self._nbTries += N
-
-            # Fill host buffers with padded format
-            self._ensure_host_buffers(N, max_len)
-            for i, offs in enumerate(offsets_list):
-                self._h_offsets[i, :len(offs)] = offs
-            self._h_lengths[:N] = lengths_list
-
-            # Copy to device
-            self._ensure_buffers(N, max_len)
-            h_offsets_flat = self._h_offsets[:N, :max_len].reshape(N * max_len)
-            self._d_offsets_flat[:N * max_len].copy_to_device(h_offsets_flat)
-            self._d_lengths[:N].copy_to_device(self._h_lengths[:N])
+            # Copy only indices and mask to GPU
+            self._h_candidate_indices[:N] = cand_indices
+            self._d_candidate_indices[:N].copy_to_device(self._h_candidate_indices[:N])
             self._d_mask_words.copy_to_device(mask)
 
             threads_per_block = 512
             blocks = (N + threads_per_block - 1) // threads_per_block
 
-            _kernel_check_candidates[blocks, threads_per_block](
+            _kernel_check_candidates_preloaded[blocks, threads_per_block](
                 self._d_mask_words, width, height, base_idx,
-                self._d_offsets_flat,
-                max_len,
-                self._d_lengths[:N],
-                self._d_valids[:N]
+                self._d_all_offsets,
+                self._all_max_len,
+                self._d_all_lengths,
+                self._d_candidate_indices[:N],
+                self._d_results[:N]
             )
 
             # Copy results back
-            valids_host = self._d_valids[:N].copy_to_host()
+            results_host = self._d_results[:N].copy_to_host()
 
             # Process valid placements
-            for i, is_valid in enumerate(valids_host):
+            for i, is_valid in enumerate(results_host):
                 if is_valid:
-                    piece_i, origin_i, vecs_i = meta[i]
+                    cand_idx = cand_indices[i]
+                    piece_idx, origin_i, vecs_i = self._all_meta[cand_idx]
+                    piece_i = self._pieces[piece_idx]
+
                     # Use lightweight placement view to avoid deepcopy costs
                     piece_view = PlacementPiece(piece_i.name, vecs_i)
                     piece_view.setOrigin(origin_i)
@@ -339,7 +463,7 @@ class PuzzleSolver:
                     newBoard = board.putPiece(piece_view, pos)
                     if newBoard is not None:
                         self._nbPcsPut += 1
-                        # Shallow copy and remove by identity; fallback to name if needed
+                        # Remove by identity
                         newPieces = pieces.copy()
                         try:
                             newPieces.remove(piece_i)
