@@ -35,7 +35,7 @@ def create_pieces():
     BigS = Piece(
         shape=[Vector(1, 0), Vector(0, 1), Vector(0, 1), Vector(1, 0)],
         name="S",
-        sides="both"
+        sides="back"
     )
     SmallsTail = Piece(
         shape=[Vector(1, 0), Vector(0, 1), Vector(1, 0), Vector(1, 0)],

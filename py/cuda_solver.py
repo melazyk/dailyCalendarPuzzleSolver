@@ -364,13 +364,19 @@ class PuzzleSolver:
         for piece_idx, piece in enumerate(self._pieces):
             start_idx = len(all_offsets)
 
-            # Ensure piece has cached candidates
+            # Ensure piece has cached candidates filtered by side constraints
             if not hasattr(piece, '_cached_candidates') or piece._cached_candidates is None:
                 piece._cached_candidates = []
                 for trans in piece._relevantTrans:
-                    transformed = piece._transform(trans)
-                    for origin in range(len(transformed) + 1):
-                        piece._cached_candidates.append((origin, transformed))
+                    # Respect side usage: only keep allowed orientations
+                    if (
+                        (piece.sides == "front" and trans.isFront())
+                        or (piece.sides == "back" and trans.isBack())
+                        or piece.sides == "both"
+                    ):
+                        transformed = piece._transform(trans)
+                        for origin in range(len(transformed) + 1):
+                            piece._cached_candidates.append((origin, transformed))
 
             # Get or compute offset cache for this width
             if not hasattr(piece, '_cached_offsets'):
@@ -439,6 +445,9 @@ class PuzzleSolver:
         self._findAll = findAll
         self._print = printSol
         self._printProgress = printProgress
+        # Track unique solutions to avoid counting duplicates that arise
+        # from symmetric candidates producing identical board states.
+        self._solutions_seen = set()
         solutions: List[Board] = []
         self._startTime = datetime.now()
         solutions = self._solve(self._board, self._pieces, solutions)
@@ -521,16 +530,20 @@ class PuzzleSolver:
                         newPieces = [p for p in newPieces if p.name != piece_i.name]
                     solutions = self._solve(newBoard, newPieces, solutions)
         else:
-            if self._print:
-                print(
-                    "\nSolution found in {} after testing {} combinations and putting {} pieces:".format(
-                        str(datetime.now() - self._startTime)[:-7],
-                        self._nbTries,
-                        self._nbPcsPut,
+            # Deduplicate solutions using a canonical ASCII representation
+            key = repr(board)
+            if key not in self._solutions_seen:
+                self._solutions_seen.add(key)
+                if self._print:
+                    print(
+                        "\nSolution found in {} after testing {} combinations and putting {} pieces:".format(
+                            str(datetime.now() - self._startTime)[:-7],
+                            self._nbTries,
+                            self._nbPcsPut,
+                        )
                     )
-                )
-                print(board, flush=True)
-            if not self._findAll:
-                self._stop = True
-            solutions.append(board)
+                    print(board, flush=True)
+                if not self._findAll:
+                    self._stop = True
+                solutions.append(board)
         return solutions
