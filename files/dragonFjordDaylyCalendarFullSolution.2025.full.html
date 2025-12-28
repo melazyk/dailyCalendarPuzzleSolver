@@ -1,0 +1,1862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dragon Fjord Calendar Puzzle - Solutions per Day 2025</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .year-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .legend-box {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #999;
+        }
+        .months-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .month {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .month-title {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+        }
+        .weekday-header {
+            text-align: center;
+            font-weight: bold;
+            padding: 8px 4px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .day-cell {
+            aspect-ratio: 1;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .day-cell:hover {
+            border-color: #333;
+            box-shadow: 0 0 5px rgba(0,0,0,0.2);
+        }
+        .day-number {
+            font-weight: bold;
+            font-size: 12px;
+        }
+        .solution-count {
+            font-size: 10px;
+            margin-top: 2px;
+        }
+        .empty-cell {
+            background-color: #f9f9f9;
+        }
+        .stats {
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .stats-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+        .stat-box {
+            padding: 10px;
+        }
+        .stat-label {
+            color: #666;
+            font-size: 12px;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="year-container">
+        <h1>Dragon Fjord Calendar Puzzle - Solutions per Day 2025</h1>
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-box" style="background-color: #ffcccc;"></div>
+                <span>0 solutions</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background-color: #ffeeaa;"></div>
+                <span>1-10 solutions</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background-color: #ccffaa;"></div>
+                <span>11-50 solutions</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background-color: #aaff99;"></div>
+                <span>51-100 solutions</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background-color: #00dd00;"></div>
+                <span>100+ solutions</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background-color: #cccccc;"></div>
+                <span>No data</span>
+            </div>
+        </div>
+        <div class="months-grid">
+        <div class="month">
+            <div class="month-title">January 2025</div>
+            <div class="calendar-grid">
+                <div class="weekday-header">Mon</div>
+                <div class="weekday-header">Tue</div>
+                <div class="weekday-header">Wed</div>
+                <div class="weekday-header">Thu</div>
+                <div class="weekday-header">Fri</div>
+                <div class="weekday-header">Sat</div>
+                <div class="weekday-header">Sun</div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">1</div>
+                    <div class="solution-count">64</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">2</div>
+                    <div class="solution-count">109</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">3</div>
+                    <div class="solution-count">47</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">4</div>
+                    <div class="solution-count">103</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">5</div>
+                    <div class="solution-count">83</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">6</div>
+                    <div class="solution-count">24</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">7</div>
+                    <div class="solution-count">188</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">8</div>
+                    <div class="solution-count">79</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">9</div>
+                    <div class="solution-count">127</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">10</div>
+                    <div class="solution-count">77</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">11</div>
+                    <div class="solution-count">74</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">12</div>
+                    <div class="solution-count">60</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">13</div>
+                    <div class="solution-count">129</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">14</div>
+                    <div class="solution-count">88</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">15</div>
+                    <div class="solution-count">87</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">16</div>
+                    <div class="solution-count">70</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">17</div>
+                    <div class="solution-count">133</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">18</div>
+                    <div class="solution-count">69</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">19</div>
+                    <div class="solution-count">104</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">20</div>
+                    <div class="solution-count">195</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">21</div>
+                    <div class="solution-count">104</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">22</div>
+                    <div class="solution-count">78</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">23</div>
+                    <div class="solution-count">188</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">24</div>
+                    <div class="solution-count">48</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">25</div>
+                    <div class="solution-count">216</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">26</div>
+                    <div class="solution-count">84</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">27</div>
+                    <div class="solution-count">85</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">28</div>
+                    <div class="solution-count">145</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">29</div>
+                    <div class="solution-count">74</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">30</div>
+                    <div class="solution-count">119</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">31</div>
+                    <div class="solution-count">170</div>
+                </div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+            </div>
+        </div>
+        <div class="month">
+            <div class="month-title">February 2025</div>
+            <div class="calendar-grid">
+                <div class="weekday-header">Mon</div>
+                <div class="weekday-header">Tue</div>
+                <div class="weekday-header">Wed</div>
+                <div class="weekday-header">Thu</div>
+                <div class="weekday-header">Fri</div>
+                <div class="weekday-header">Sat</div>
+                <div class="weekday-header">Sun</div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">1</div>
+                    <div class="solution-count">73</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">2</div>
+                    <div class="solution-count">45</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">3</div>
+                    <div class="solution-count">22</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">4</div>
+                    <div class="solution-count">41</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">5</div>
+                    <div class="solution-count">49</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">6</div>
+                    <div class="solution-count">27</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">7</div>
+                    <div class="solution-count">88</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">8</div>
+                    <div class="solution-count">48</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">9</div>
+                    <div class="solution-count">32</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">10</div>
+                    <div class="solution-count">47</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">11</div>
+                    <div class="solution-count">26</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">12</div>
+                    <div class="solution-count">31</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">13</div>
+                    <div class="solution-count">59</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">14</div>
+                    <div class="solution-count">31</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">15</div>
+                    <div class="solution-count">28</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">16</div>
+                    <div class="solution-count">26</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">17</div>
+                    <div class="solution-count">55</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">18</div>
+                    <div class="solution-count">35</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">19</div>
+                    <div class="solution-count">45</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">20</div>
+                    <div class="solution-count">67</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">21</div>
+                    <div class="solution-count">29</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">22</div>
+                    <div class="solution-count">25</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">23</div>
+                    <div class="solution-count">81</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">24</div>
+                    <div class="solution-count">21</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">25</div>
+                    <div class="solution-count">78</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">26</div>
+                    <div class="solution-count">63</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">27</div>
+                    <div class="solution-count">47</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">28</div>
+                    <div class="solution-count">81</div>
+                </div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+            </div>
+        </div>
+        <div class="month">
+            <div class="month-title">March 2025</div>
+            <div class="calendar-grid">
+                <div class="weekday-header">Mon</div>
+                <div class="weekday-header">Tue</div>
+                <div class="weekday-header">Wed</div>
+                <div class="weekday-header">Thu</div>
+                <div class="weekday-header">Fri</div>
+                <div class="weekday-header">Sat</div>
+                <div class="weekday-header">Sun</div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">1</div>
+                    <div class="solution-count">17</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">2</div>
+                    <div class="solution-count">24</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">3</div>
+                    <div class="solution-count">39</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">4</div>
+                    <div class="solution-count">57</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">5</div>
+                    <div class="solution-count">32</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">6</div>
+                    <div class="solution-count">16</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">7</div>
+                    <div class="solution-count">86</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">8</div>
+                    <div class="solution-count">66</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">9</div>
+                    <div class="solution-count">71</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">10</div>
+                    <div class="solution-count">27</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">11</div>
+                    <div class="solution-count">40</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">12</div>
+                    <div class="solution-count">40</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">13</div>
+                    <div class="solution-count">53</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">14</div>
+                    <div class="solution-count">44</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">15</div>
+                    <div class="solution-count">39</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">16</div>
+                    <div class="solution-count">30</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">17</div>
+                    <div class="solution-count">60</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">18</div>
+                    <div class="solution-count">22</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">19</div>
+                    <div class="solution-count">52</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">20</div>
+                    <div class="solution-count">61</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">21</div>
+                    <div class="solution-count">29</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">22</div>
+                    <div class="solution-count">29</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">23</div>
+                    <div class="solution-count">92</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">24</div>
+                    <div class="solution-count">24</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">25</div>
+                    <div class="solution-count">61</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">26</div>
+                    <div class="solution-count">72</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">27</div>
+                    <div class="solution-count">49</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">28</div>
+                    <div class="solution-count">80</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">29</div>
+                    <div class="solution-count">49</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">30</div>
+                    <div class="solution-count">18</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">31</div>
+                    <div class="solution-count">107</div>
+                </div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+            </div>
+        </div>
+        <div class="month">
+            <div class="month-title">April 2025</div>
+            <div class="calendar-grid">
+                <div class="weekday-header">Mon</div>
+                <div class="weekday-header">Tue</div>
+                <div class="weekday-header">Wed</div>
+                <div class="weekday-header">Thu</div>
+                <div class="weekday-header">Fri</div>
+                <div class="weekday-header">Sat</div>
+                <div class="weekday-header">Sun</div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">1</div>
+                    <div class="solution-count">55</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">2</div>
+                    <div class="solution-count">49</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">3</div>
+                    <div class="solution-count">78</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">4</div>
+                    <div class="solution-count">56</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">5</div>
+                    <div class="solution-count">63</div>
+                </div>
+                <div class="day-cell" style="background-color: #ffeeaa;">
+                    <div class="day-number">6</div>
+                    <div class="solution-count">8</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">7</div>
+                    <div class="solution-count">104</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">8</div>
+                    <div class="solution-count">111</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">9</div>
+                    <div class="solution-count">52</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">10</div>
+                    <div class="solution-count">88</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">11</div>
+                    <div class="solution-count">68</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">12</div>
+                    <div class="solution-count">47</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">13</div>
+                    <div class="solution-count">63</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">14</div>
+                    <div class="solution-count">62</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">15</div>
+                    <div class="solution-count">59</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">16</div>
+                    <div class="solution-count">61</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">17</div>
+                    <div class="solution-count">62</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">18</div>
+                    <div class="solution-count">41</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">19</div>
+                    <div class="solution-count">52</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">20</div>
+                    <div class="solution-count">123</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">21</div>
+                    <div class="solution-count">76</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">22</div>
+                    <div class="solution-count">49</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">23</div>
+                    <div class="solution-count">145</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">24</div>
+                    <div class="solution-count">26</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">25</div>
+                    <div class="solution-count">116</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">26</div>
+                    <div class="solution-count">81</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">27</div>
+                    <div class="solution-count">68</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">28</div>
+                    <div class="solution-count">140</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">29</div>
+                    <div class="solution-count">84</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">30</div>
+                    <div class="solution-count">52</div>
+                </div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+            </div>
+        </div>
+        <div class="month">
+            <div class="month-title">May 2025</div>
+            <div class="calendar-grid">
+                <div class="weekday-header">Mon</div>
+                <div class="weekday-header">Tue</div>
+                <div class="weekday-header">Wed</div>
+                <div class="weekday-header">Thu</div>
+                <div class="weekday-header">Fri</div>
+                <div class="weekday-header">Sat</div>
+                <div class="weekday-header">Sun</div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">1</div>
+                    <div class="solution-count">57</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">2</div>
+                    <div class="solution-count">62</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">3</div>
+                    <div class="solution-count">32</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">4</div>
+                    <div class="solution-count">47</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">5</div>
+                    <div class="solution-count">56</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">6</div>
+                    <div class="solution-count">23</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">7</div>
+                    <div class="solution-count">116</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">8</div>
+                    <div class="solution-count">42</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">9</div>
+                    <div class="solution-count">33</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">10</div>
+                    <div class="solution-count">48</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">11</div>
+                    <div class="solution-count">51</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">12</div>
+                    <div class="solution-count">23</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">13</div>
+                    <div class="solution-count">77</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">14</div>
+                    <div class="solution-count">53</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">15</div>
+                    <div class="solution-count">56</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">16</div>
+                    <div class="solution-count">43</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">17</div>
+                    <div class="solution-count">67</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">18</div>
+                    <div class="solution-count">36</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">19</div>
+                    <div class="solution-count">46</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">20</div>
+                    <div class="solution-count">62</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">21</div>
+                    <div class="solution-count">36</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">22</div>
+                    <div class="solution-count">16</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">23</div>
+                    <div class="solution-count">87</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">24</div>
+                    <div class="solution-count">14</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">25</div>
+                    <div class="solution-count">101</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">26</div>
+                    <div class="solution-count">53</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">27</div>
+                    <div class="solution-count">47</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">28</div>
+                    <div class="solution-count">130</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">29</div>
+                    <div class="solution-count">66</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">30</div>
+                    <div class="solution-count">79</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">31</div>
+                    <div class="solution-count">87</div>
+                </div>
+                <div class="day-cell empty-cell"></div>
+            </div>
+        </div>
+        <div class="month">
+            <div class="month-title">June 2025</div>
+            <div class="calendar-grid">
+                <div class="weekday-header">Mon</div>
+                <div class="weekday-header">Tue</div>
+                <div class="weekday-header">Wed</div>
+                <div class="weekday-header">Thu</div>
+                <div class="weekday-header">Fri</div>
+                <div class="weekday-header">Sat</div>
+                <div class="weekday-header">Sun</div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">1</div>
+                    <div class="solution-count">56</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">2</div>
+                    <div class="solution-count">49</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">3</div>
+                    <div class="solution-count">54</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">4</div>
+                    <div class="solution-count">48</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">5</div>
+                    <div class="solution-count">50</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">6</div>
+                    <div class="solution-count">24</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">7</div>
+                    <div class="solution-count">191</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">8</div>
+                    <div class="solution-count">85</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">9</div>
+                    <div class="solution-count">52</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">10</div>
+                    <div class="solution-count">44</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">11</div>
+                    <div class="solution-count">78</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">12</div>
+                    <div class="solution-count">45</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">13</div>
+                    <div class="solution-count">44</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">14</div>
+                    <div class="solution-count">61</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">15</div>
+                    <div class="solution-count">57</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">16</div>
+                    <div class="solution-count">38</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">17</div>
+                    <div class="solution-count">75</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">18</div>
+                    <div class="solution-count">42</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">19</div>
+                    <div class="solution-count">86</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">20</div>
+                    <div class="solution-count">114</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">21</div>
+                    <div class="solution-count">57</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">22</div>
+                    <div class="solution-count">35</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">23</div>
+                    <div class="solution-count">102</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">24</div>
+                    <div class="solution-count">31</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">25</div>
+                    <div class="solution-count">150</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">26</div>
+                    <div class="solution-count">73</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">27</div>
+                    <div class="solution-count">73</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">28</div>
+                    <div class="solution-count">163</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">29</div>
+                    <div class="solution-count">57</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">30</div>
+                    <div class="solution-count">39</div>
+                </div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+            </div>
+        </div>
+        <div class="month">
+            <div class="month-title">July 2025</div>
+            <div class="calendar-grid">
+                <div class="weekday-header">Mon</div>
+                <div class="weekday-header">Tue</div>
+                <div class="weekday-header">Wed</div>
+                <div class="weekday-header">Thu</div>
+                <div class="weekday-header">Fri</div>
+                <div class="weekday-header">Sat</div>
+                <div class="weekday-header">Sun</div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">1</div>
+                    <div class="solution-count">99</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">2</div>
+                    <div class="solution-count">19</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">3</div>
+                    <div class="solution-count">27</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">4</div>
+                    <div class="solution-count">70</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">5</div>
+                    <div class="solution-count">34</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">6</div>
+                    <div class="solution-count">12</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">7</div>
+                    <div class="solution-count">125</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">8</div>
+                    <div class="solution-count">63</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">9</div>
+                    <div class="solution-count">72</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">10</div>
+                    <div class="solution-count">40</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">11</div>
+                    <div class="solution-count">43</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">12</div>
+                    <div class="solution-count">37</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">13</div>
+                    <div class="solution-count">70</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">14</div>
+                    <div class="solution-count">48</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">15</div>
+                    <div class="solution-count">28</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">16</div>
+                    <div class="solution-count">40</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">17</div>
+                    <div class="solution-count">109</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">18</div>
+                    <div class="solution-count">43</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">19</div>
+                    <div class="solution-count">61</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">20</div>
+                    <div class="solution-count">108</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">21</div>
+                    <div class="solution-count">52</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">22</div>
+                    <div class="solution-count">24</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">23</div>
+                    <div class="solution-count">78</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">24</div>
+                    <div class="solution-count">22</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">25</div>
+                    <div class="solution-count">97</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">26</div>
+                    <div class="solution-count">38</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">27</div>
+                    <div class="solution-count">68</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">28</div>
+                    <div class="solution-count">133</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">29</div>
+                    <div class="solution-count">42</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">30</div>
+                    <div class="solution-count">51</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">31</div>
+                    <div class="solution-count">82</div>
+                </div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+            </div>
+        </div>
+        <div class="month">
+            <div class="month-title">August 2025</div>
+            <div class="calendar-grid">
+                <div class="weekday-header">Mon</div>
+                <div class="weekday-header">Tue</div>
+                <div class="weekday-header">Wed</div>
+                <div class="weekday-header">Thu</div>
+                <div class="weekday-header">Fri</div>
+                <div class="weekday-header">Sat</div>
+                <div class="weekday-header">Sun</div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">1</div>
+                    <div class="solution-count">68</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">2</div>
+                    <div class="solution-count">85</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">3</div>
+                    <div class="solution-count">40</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">4</div>
+                    <div class="solution-count">94</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">5</div>
+                    <div class="solution-count">76</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">6</div>
+                    <div class="solution-count">44</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">7</div>
+                    <div class="solution-count">172</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">8</div>
+                    <div class="solution-count">105</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">9</div>
+                    <div class="solution-count">88</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">10</div>
+                    <div class="solution-count">87</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">11</div>
+                    <div class="solution-count">57</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">12</div>
+                    <div class="solution-count">59</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">13</div>
+                    <div class="solution-count">120</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">14</div>
+                    <div class="solution-count">70</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">15</div>
+                    <div class="solution-count">72</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">16</div>
+                    <div class="solution-count">85</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">17</div>
+                    <div class="solution-count">107</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">18</div>
+                    <div class="solution-count">65</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">19</div>
+                    <div class="solution-count">100</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">20</div>
+                    <div class="solution-count">116</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">21</div>
+                    <div class="solution-count">53</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">22</div>
+                    <div class="solution-count">41</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">23</div>
+                    <div class="solution-count">129</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">24</div>
+                    <div class="solution-count">24</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">25</div>
+                    <div class="solution-count">161</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">26</div>
+                    <div class="solution-count">84</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">27</div>
+                    <div class="solution-count">111</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">28</div>
+                    <div class="solution-count">189</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">29</div>
+                    <div class="solution-count">82</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">30</div>
+                    <div class="solution-count">78</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">31</div>
+                    <div class="solution-count">151</div>
+                </div>
+            </div>
+        </div>
+        <div class="month">
+            <div class="month-title">September 2025</div>
+            <div class="calendar-grid">
+                <div class="weekday-header">Mon</div>
+                <div class="weekday-header">Tue</div>
+                <div class="weekday-header">Wed</div>
+                <div class="weekday-header">Thu</div>
+                <div class="weekday-header">Fri</div>
+                <div class="weekday-header">Sat</div>
+                <div class="weekday-header">Sun</div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">1</div>
+                    <div class="solution-count">34</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">2</div>
+                    <div class="solution-count">18</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">3</div>
+                    <div class="solution-count">49</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">4</div>
+                    <div class="solution-count">38</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">5</div>
+                    <div class="solution-count">25</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">6</div>
+                    <div class="solution-count">27</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">7</div>
+                    <div class="solution-count">92</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">8</div>
+                    <div class="solution-count">50</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">9</div>
+                    <div class="solution-count">43</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">10</div>
+                    <div class="solution-count">51</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">11</div>
+                    <div class="solution-count">36</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">12</div>
+                    <div class="solution-count">20</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">13</div>
+                    <div class="solution-count">46</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">14</div>
+                    <div class="solution-count">21</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">15</div>
+                    <div class="solution-count">58</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">16</div>
+                    <div class="solution-count">42</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">17</div>
+                    <div class="solution-count">52</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">18</div>
+                    <div class="solution-count">34</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">19</div>
+                    <div class="solution-count">33</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">20</div>
+                    <div class="solution-count">70</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">21</div>
+                    <div class="solution-count">38</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">22</div>
+                    <div class="solution-count">29</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">23</div>
+                    <div class="solution-count">85</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">24</div>
+                    <div class="solution-count">24</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">25</div>
+                    <div class="solution-count">54</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">26</div>
+                    <div class="solution-count">48</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">27</div>
+                    <div class="solution-count">39</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">28</div>
+                    <div class="solution-count">78</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">29</div>
+                    <div class="solution-count">48</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">30</div>
+                    <div class="solution-count">36</div>
+                </div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+            </div>
+        </div>
+        <div class="month">
+            <div class="month-title">October 2025</div>
+            <div class="calendar-grid">
+                <div class="weekday-header">Mon</div>
+                <div class="weekday-header">Tue</div>
+                <div class="weekday-header">Wed</div>
+                <div class="weekday-header">Thu</div>
+                <div class="weekday-header">Fri</div>
+                <div class="weekday-header">Sat</div>
+                <div class="weekday-header">Sun</div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">1</div>
+                    <div class="solution-count">58</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">2</div>
+                    <div class="solution-count">34</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">3</div>
+                    <div class="solution-count">28</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">4</div>
+                    <div class="solution-count">59</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">5</div>
+                    <div class="solution-count">13</div>
+                </div>
+                <div class="day-cell" style="background-color: #ffeeaa;">
+                    <div class="day-number">6</div>
+                    <div class="solution-count">7</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">7</div>
+                    <div class="solution-count">92</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">8</div>
+                    <div class="solution-count">50</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">9</div>
+                    <div class="solution-count">36</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">10</div>
+                    <div class="solution-count">59</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">11</div>
+                    <div class="solution-count">28</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">12</div>
+                    <div class="solution-count">16</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">13</div>
+                    <div class="solution-count">52</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">14</div>
+                    <div class="solution-count">54</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">15</div>
+                    <div class="solution-count">43</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">16</div>
+                    <div class="solution-count">26</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">17</div>
+                    <div class="solution-count">48</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">18</div>
+                    <div class="solution-count">26</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">19</div>
+                    <div class="solution-count">50</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">20</div>
+                    <div class="solution-count">67</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">21</div>
+                    <div class="solution-count">25</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">22</div>
+                    <div class="solution-count">27</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">23</div>
+                    <div class="solution-count">87</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">24</div>
+                    <div class="solution-count">22</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">25</div>
+                    <div class="solution-count">85</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">26</div>
+                    <div class="solution-count">36</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">27</div>
+                    <div class="solution-count">29</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">28</div>
+                    <div class="solution-count">95</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">29</div>
+                    <div class="solution-count">56</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">30</div>
+                    <div class="solution-count">29</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">31</div>
+                    <div class="solution-count">106</div>
+                </div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+            </div>
+        </div>
+        <div class="month">
+            <div class="month-title">November 2025</div>
+            <div class="calendar-grid">
+                <div class="weekday-header">Mon</div>
+                <div class="weekday-header">Tue</div>
+                <div class="weekday-header">Wed</div>
+                <div class="weekday-header">Thu</div>
+                <div class="weekday-header">Fri</div>
+                <div class="weekday-header">Sat</div>
+                <div class="weekday-header">Sun</div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">1</div>
+                    <div class="solution-count">82</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">2</div>
+                    <div class="solution-count">91</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">3</div>
+                    <div class="solution-count">75</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">4</div>
+                    <div class="solution-count">68</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">5</div>
+                    <div class="solution-count">178</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">6</div>
+                    <div class="solution-count">33</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">7</div>
+                    <div class="solution-count">179</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">8</div>
+                    <div class="solution-count">108</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">9</div>
+                    <div class="solution-count">72</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">10</div>
+                    <div class="solution-count">97</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">11</div>
+                    <div class="solution-count">102</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">12</div>
+                    <div class="solution-count">92</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">13</div>
+                    <div class="solution-count">78</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">14</div>
+                    <div class="solution-count">76</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">15</div>
+                    <div class="solution-count">67</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">16</div>
+                    <div class="solution-count">64</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">17</div>
+                    <div class="solution-count">115</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">18</div>
+                    <div class="solution-count">81</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">19</div>
+                    <div class="solution-count">82</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">20</div>
+                    <div class="solution-count">164</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">21</div>
+                    <div class="solution-count">104</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">22</div>
+                    <div class="solution-count">40</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">23</div>
+                    <div class="solution-count">101</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">24</div>
+                    <div class="solution-count">35</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">25</div>
+                    <div class="solution-count">155</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">26</div>
+                    <div class="solution-count">106</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">27</div>
+                    <div class="solution-count">86</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">28</div>
+                    <div class="solution-count">183</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">29</div>
+                    <div class="solution-count">85</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">30</div>
+                    <div class="solution-count">74</div>
+                </div>
+            </div>
+        </div>
+        <div class="month">
+            <div class="month-title">December 2025</div>
+            <div class="calendar-grid">
+                <div class="weekday-header">Mon</div>
+                <div class="weekday-header">Tue</div>
+                <div class="weekday-header">Wed</div>
+                <div class="weekday-header">Thu</div>
+                <div class="weekday-header">Fri</div>
+                <div class="weekday-header">Sat</div>
+                <div class="weekday-header">Sun</div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">1</div>
+                    <div class="solution-count">26</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">2</div>
+                    <div class="solution-count">32</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">3</div>
+                    <div class="solution-count">67</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">4</div>
+                    <div class="solution-count">45</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">5</div>
+                    <div class="solution-count">32</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">6</div>
+                    <div class="solution-count">66</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">7</div>
+                    <div class="solution-count">125</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">8</div>
+                    <div class="solution-count">67</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">9</div>
+                    <div class="solution-count">73</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">10</div>
+                    <div class="solution-count">66</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">11</div>
+                    <div class="solution-count">44</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">12</div>
+                    <div class="solution-count">78</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">13</div>
+                    <div class="solution-count">99</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">14</div>
+                    <div class="solution-count">39</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">15</div>
+                    <div class="solution-count">81</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">16</div>
+                    <div class="solution-count">68</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">17</div>
+                    <div class="solution-count">82</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">18</div>
+                    <div class="solution-count">38</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">19</div>
+                    <div class="solution-count">59</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">20</div>
+                    <div class="solution-count">103</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">21</div>
+                    <div class="solution-count">44</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">22</div>
+                    <div class="solution-count">49</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">23</div>
+                    <div class="solution-count">115</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">24</div>
+                    <div class="solution-count">30</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">25</div>
+                    <div class="solution-count">92</div>
+                </div>
+                <div class="day-cell" style="background-color: #ccffaa;">
+                    <div class="day-number">26</div>
+                    <div class="solution-count">48</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">27</div>
+                    <div class="solution-count">71</div>
+                </div>
+                <div class="day-cell" style="background-color: #00dd00;">
+                    <div class="day-number">28</div>
+                    <div class="solution-count">164</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">29</div>
+                    <div class="solution-count">54</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">30</div>
+                    <div class="solution-count">60</div>
+                </div>
+                <div class="day-cell" style="background-color: #aaff99;">
+                    <div class="day-number">31</div>
+                    <div class="solution-count">77</div>
+                </div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+                <div class="day-cell empty-cell"></div>
+            </div>
+        </div>
+        </div>
+        <div class="stats">
+            <h2>Statistics for 2025</h2>
+            <div class="stats-content">
+                <div class="stat-box">
+                    <div class="stat-label">Total Days Calculated</div>
+                    <div class="stat-value">365</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Total Solutions</div>
+                    <div class="stat-value">24341</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Average Solutions/Day</div>
+                    <div class="stat-value">66.7</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Min Solutions in a Day</div>
+                    <div class="stat-value">7</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Max Solutions in a Day</div>
+                    <div class="stat-value">216</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Days with 0 Solutions</div>
+                    <div class="stat-value">0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
