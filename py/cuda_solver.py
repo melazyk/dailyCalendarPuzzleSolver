@@ -210,6 +210,40 @@ def _kernel_check_candidates_preloaded(
 
 
 @cuda.jit
+def _kernel_check_candidates_preloaded_compact_out(
+    board_bits: np.ndarray,
+    width: int,
+    height: int,
+    base_idx: int,
+    all_offsets: np.ndarray,  # flat: total_cand * max_len
+    max_len: int,
+    all_lengths: np.ndarray,
+    candidate_indices: np.ndarray,
+    valid_indices: np.ndarray,
+    valid_count: np.ndarray,
+) -> None:
+    i = cuda.grid(1)
+    if i >= candidate_indices.shape[0]:
+        return
+
+    cand_idx = candidate_indices[i]
+    total_cells = width * height
+    L = all_lengths[cand_idx]
+    offset_base = cand_idx * max_len
+
+    for j in range(L):
+        cell_idx = base_idx + all_offsets[offset_base + j]
+        if cell_idx < 0 or cell_idx >= total_cells:
+            return
+        word = cell_idx >> 6
+        bit = cell_idx & 63
+        if (board_bits[word] >> bit) & 1 == 0:
+            return
+
+    idx = cuda.atomic.add(valid_count, 0, 1)
+    valid_indices[idx] = i
+
+@cuda.jit
 def _kernel_check_candidates_preloaded_old(
     board_bits: np.ndarray,  # uint64 bitmask (3,)
     width: int,
@@ -390,6 +424,11 @@ class PuzzleSolver:
         self._h_candidate_indices = cuda.pinned_array(total_candidates, dtype=np.int32)
         self._d_candidate_indices = cuda.device_array(total_candidates, dtype=np.int32)
         self._d_results = cuda.device_array(total_candidates, dtype=np.int32)
+        # Buffers for compact D2H (valid indices only)
+        self._d_valid_indices = cuda.device_array(total_candidates, dtype=np.int32)
+        self._d_valid_count = cuda.device_array(1, dtype=np.int32)
+        self._h_valid_indices = cuda.pinned_array(total_candidates, dtype=np.int32)
+        self._h_valid_count = cuda.pinned_array(1, dtype=np.int32)
 
     def solve(self, findAll: bool = False, printSol: bool = True):
         self._findAll = findAll
@@ -437,22 +476,30 @@ class PuzzleSolver:
             threads_per_block = 512
             blocks = (N + threads_per_block - 1) // threads_per_block
 
-            _kernel_check_candidates_preloaded[blocks, threads_per_block](
+            # Reset valid count and run kernel that compacts valid indices
+            self._h_valid_count[0] = 0
+            self._d_valid_count.copy_to_device(self._h_valid_count)
+
+            _kernel_check_candidates_preloaded_compact_out[blocks, threads_per_block](
                 self._d_mask_words, width, height, base_idx,
                 self._d_all_offsets,
                 self._all_max_len,
                 self._d_all_lengths,
                 self._d_candidate_indices[:N],
-                self._d_results[:N]
+                self._d_valid_indices,
+                self._d_valid_count,
             )
 
-            # Copy results back
-            results_host = self._d_results[:N].copy_to_host()
+            # Copy back number of valid indices
+            self._d_valid_count.copy_to_host(self._h_valid_count)
+            num_valid = int(self._h_valid_count[0])
+            if num_valid > 0:
+                self._d_valid_indices[:num_valid].copy_to_host(self._h_valid_indices[:num_valid])
 
             # Process valid placements
-            for i, is_valid in enumerate(results_host):
-                if is_valid:
-                    cand_idx = cand_indices[i]
+            for k in range(num_valid):
+                i = int(self._h_valid_indices[k])
+                cand_idx = cand_indices[i]
                     piece_idx, origin_i, vecs_i = self._all_meta[cand_idx]
                     piece_i = self._pieces[piece_idx]
 
