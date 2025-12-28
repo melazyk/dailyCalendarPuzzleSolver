@@ -443,72 +443,66 @@ class PuzzleSolver:
         return solutions, self._nbTries, self._nbPcsPut
 
     def _solve(self, board: Board, pieces: List[Piece], solutions: List[Board]):
-        """Depth-first search using preloaded candidates on GPU."""
+        """Depth-first search: encode current-level candidates, validate on GPU, place on CPU."""
         nbPcs = len(pieces)
         if nbPcs:
             pos = board.nextAvailablePos()
             if pos is None:
                 return solutions
 
-            # Build list of candidate indices for current pieces
-            # Map each piece to its index in self._pieces
-            piece_to_idx = {id(self._pieces[i]): i for i in range(len(self._pieces))}
-
-            cand_indices = []
-            for piece in pieces:
-                piece_idx = piece_to_idx.get(id(piece))
-                if piece_idx is not None:
-                    start_idx, count = self._piece_ranges[piece_idx]
-                    cand_indices.extend(range(start_idx, start_idx + count))
-
-            N = len(cand_indices)
+            # Encode candidates for the current set of pieces using CPU logic
+            board_width = len(board._board[0])
+            offsets_list, lengths_list, candidates_meta, max_len = _encode_candidates(pieces, board_width)
+            N = len(offsets_list)
             if N == 0:
                 return solutions
 
             self._nbTries += N
 
+            # Prepare bitmask and anchor point
             mask, width, height = _board_to_bitmask(board)
             pos_abs_x = board._origin.x + pos.x
             pos_abs_y = board._origin.y + pos.y
             base_idx = pos_abs_y * width + pos_abs_x
 
-            # Copy only indices and mask to GPU (async)
-            self._h_candidate_indices[:N] = cand_indices
-            self._d_candidate_indices[:N].copy_to_device(self._h_candidate_indices[:N], stream=self._stream)
-            self._d_mask_words.copy_to_device(mask, stream=self._stream)
+            # Ensure buffers are large enough
+            self._ensure_host_buffers(N, max_len)
+            self._ensure_buffers(N, max_len)
+
+            # Fill padded host buffers
+            self._h_offsets[:N, :max_len] = 0  # Clear
+            for i, offs in enumerate(offsets_list):
+                self._h_offsets[i, :len(offs)] = np.array(offs, dtype=np.int32)
+            self._h_lengths[:N] = np.array(lengths_list, dtype=np.int32)
+
+            # Flatten offsets for GPU copy
+            h_offsets_flat = self._h_offsets[:N, :max_len].reshape(N * max_len)
+            self._d_offsets_flat[:N * max_len].copy_to_device(h_offsets_flat)
+            self._d_lengths[:N].copy_to_device(self._h_lengths[:N])
+            self._d_mask_words.copy_to_device(mask)
 
             threads_per_block = 512
             blocks = (N + threads_per_block - 1) // threads_per_block
 
-            # Reset valid count and run kernel that compacts valid indices
-            self._h_valid_count[0] = 0
-            self._d_valid_count.copy_to_device(self._h_valid_count)
-
-            _kernel_check_candidates_preloaded_compact_out[blocks, threads_per_block, self._stream](
+            # Validate candidates on GPU
+            _kernel_check_candidates[blocks, threads_per_block](
                 self._d_mask_words, width, height, base_idx,
-                self._d_all_offsets,
-                self._all_max_len,
-                self._d_all_lengths,
-                self._d_candidate_indices[:N],
-                self._d_valid_indices,
-                self._d_valid_count,
+                self._d_offsets_flat[:N * max_len],
+                max_len,
+                self._d_lengths[:N],
+                self._d_valids[:N],
             )
 
-            # Copy back number of valid indices
-            self._d_valid_count.copy_to_host(self._h_valid_count, stream=self._stream)
-            # Ensure count is available before conditional index copy
-            self._stream.synchronize()
-            num_valid = int(self._h_valid_count[0])
-            if num_valid > 0:
-                self._d_valid_indices[:num_valid].copy_to_host(self._h_valid_indices[:num_valid], stream=self._stream)
-                self._stream.synchronize()
+            # Copy results back using a dedicated 1D host buffer
+            tmp_results = cuda.pinned_array(N, dtype=np.int32)
+            self._d_valids[:N].copy_to_host(tmp_results)
+            results = np.asarray(tmp_results, dtype=np.int32)
 
             # Process valid placements
-            for k in range(num_valid):
-                i = int(self._h_valid_indices[k])
-                cand_idx = cand_indices[i]
-                piece_idx, origin_i, vecs_i = self._all_meta[cand_idx]
-                piece_i = self._pieces[piece_idx]
+            for i in range(N):
+                if int(results[i]) != 1:
+                    continue
+                piece_i, origin_i, vecs_i = candidates_meta[i]
 
                 # Use lightweight placement view to avoid deepcopy costs
                 piece_view = PlacementPiece(piece_i.name, vecs_i)
