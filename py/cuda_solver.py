@@ -41,18 +41,22 @@ def _board_to_bitmask(board: Board) -> Tuple[np.ndarray, int, int]:
 def _encode_candidates(
     pieces: List[Piece],
     board_width: int,
-) -> Tuple[np.ndarray, np.ndarray, List[Tuple[Piece, int, List[Vector]]]]:
+) -> Tuple[List[List[int]], List[int], List[Tuple[Piece, int, List[Vector]]], int]:
     """
-    Build candidate relative offsets for bitboard kernel.
+    Build candidate relative offsets for bitboard kernel with caching.
     Returns:
-      offsets: (N, Lmax) int32 – flattened offsets relative to anchor cell
-      lengths: (N,) int32 – number of cells per candidate
-      meta:    list of (piece, origin, vec_list) for CPU-side placement
+      offsets_list: list of lists of offsets
+      lengths_list: list of candidate lengths
+      meta:         list of (piece, origin, vec_list) for CPU-side placement
+      max_len:      maximum candidate length
     """
     candidates_meta: List[Tuple[Piece, int, List[Vector]]] = []
-    offsets: List[List[int]] = []
+    offsets_list: List[List[int]] = []
+    lengths_list: List[int] = []
+    max_len = 0
 
     for piece in pieces:
+        # Cache transforms once
         if not hasattr(piece, "_cached_candidates"):
             cached = []
             relTrans = piece.relevantTrans()
@@ -67,42 +71,46 @@ def _encode_candidates(
                         cached.append((origin, [Vector(v.x, v.y) for v in vecs]))
             piece._cached_candidates = cached
 
-        for origin, vecs in piece._cached_candidates:
-            coords = [(0, 0)]
+        # Cache offsets per board width (offset values depend on width)
+        width_cache = getattr(piece, "_cached_offsets", None)
+        if width_cache is None:
+            width_cache = {}
+            piece._cached_offsets = width_cache
 
-            cx = cy = 0
-            for idx in range(origin - 1, -1, -1):
-                v = vecs[idx]
-                cx -= v.x
-                cy -= v.y
-                coords.append((cx, cy))
+        cached_for_width = width_cache.get(board_width)
+        if cached_for_width is None:
+            entries = []
+            for origin, vecs in piece._cached_candidates:
+                coords = [(0, 0)]
 
-            cx = cy = 0
-            for idx in range(origin, len(vecs)):
-                v = vecs[idx]
-                cx += v.x
-                cy += v.y
-                coords.append((cx, cy))
+                cx = cy = 0
+                for idx in range(origin - 1, -1, -1):
+                    v = vecs[idx]
+                    cx -= v.x
+                    cy -= v.y
+                    coords.append((cx, cy))
 
-            offsets.append([cy * board_width + cx for (cx, cy) in coords])
+                cx = cy = 0
+                for idx in range(origin, len(vecs)):
+                    v = vecs[idx]
+                    cx += v.x
+                    cy += v.y
+                    coords.append((cx, cy))
+
+                offs = [cy * board_width + cx for (cx, cy) in coords]
+                entries.append((origin, vecs, offs))
+            width_cache[board_width] = entries
+            cached_for_width = entries
+
+        for origin, vecs, offs in cached_for_width:
             candidates_meta.append((piece, origin, vecs))
+            offsets_list.append(offs)
+            L = len(offs)
+            lengths_list.append(L)
+            if L > max_len:
+                max_len = L
 
-    if not offsets:
-        return (
-            np.empty((0, 0), dtype=np.int32),
-            np.empty((0,), dtype=np.int32),
-            candidates_meta,
-        )
-
-    max_len = max(len(c) for c in offsets)
-    N = len(offsets)
-    offsets_arr = np.zeros((N, max_len), dtype=np.int32)
-    lengths = np.zeros((N,), dtype=np.int32)
-    for i, offs in enumerate(offsets):
-        lengths[i] = len(offs)
-        offsets_arr[i, : len(offs)] = offs
-
-    return offsets_arr, lengths, candidates_meta
+    return offsets_list, lengths_list, candidates_meta, max_len
 
 
 class PlacementPiece:
@@ -164,6 +172,47 @@ def _kernel_check_candidates(
     results[i] = 1
 
 
+@cuda.jit
+def _kernel_check_candidates_preloaded(
+    board_bits: np.ndarray,  # uint64 bitmask (3,)
+    width: int,
+    height: int,
+    base_idx: int,
+    all_offsets: np.ndarray,  # (total_candidates, max_len) on GPU
+    all_lengths: np.ndarray,  # (total_candidates,) on GPU
+    candidate_indices: np.ndarray,  # (N,) indices into all_offsets/all_lengths
+    results: np.ndarray,  # (N,) valid flags
+    valid_indices: np.ndarray,  # (N,) output: indices of valid candidates
+    valid_count: np.ndarray,  # (1,) output: count of valid
+) -> None:
+    i = cuda.grid(1)
+    if i >= candidate_indices.shape[0]:
+        return
+
+    total_cells = width * height
+    cand_idx = candidate_indices[i]
+    L = all_lengths[cand_idx]
+
+    is_valid = 1
+    for j in range(L):
+        cell_idx = base_idx + all_offsets[cand_idx, j]
+        if cell_idx < 0 or cell_idx >= total_cells:
+            is_valid = 0
+            break
+
+        word = cell_idx >> 6
+        bit = cell_idx & 63
+        if (board_bits[word] >> bit) & 1 == 0:
+            is_valid = 0
+            break
+
+    results[i] = is_valid
+    if is_valid:
+        # Atomically increment valid count and store index
+        idx = cuda.atomic.add(valid_count, 0, 1)
+        valid_indices[idx] = i
+
+
 class PuzzleSolver:
     """
     CUDA-accelerated puzzle solver with the same API as solver.PuzzleSolver.
@@ -197,6 +246,11 @@ class PuzzleSolver:
         self._cap_L = 0
         # Fixed 3-word mask buffer
         self._d_mask_words = cuda.device_array(3, dtype=np.uint64)
+        # Host buffer pool (pinned for faster H2D copies)
+        self._h_offsets = None
+        self._h_lengths = None
+        self._cap_h_N = 0
+        self._cap_h_L = 0
 
     def _ensure_buffers(self, N: int, max_len: int):
         # Ensure device buffers have enough capacity; allocate if needed
@@ -209,6 +263,15 @@ class PuzzleSolver:
             self._d_lengths = cuda.device_array(self._cap_N, dtype=np.int32)
         if (self._d_valids is None) or (N > self._cap_N):
             self._d_valids = cuda.device_array(self._cap_N, dtype=np.int32)
+
+    def _ensure_host_buffers(self, N: int, max_len: int):
+        # Host-side pool to reduce allocations (pinned for faster transfers)
+        if (self._h_offsets is None) or (N > self._cap_h_N) or (max_len > self._cap_h_L):
+            self._cap_h_N = max(N, self._cap_h_N or N)
+            self._cap_h_L = max(max_len, self._cap_h_L or max_len)
+            self._h_offsets = cuda.pinned_array((self._cap_h_N, self._cap_h_L), dtype=np.int32)
+        if (self._h_lengths is None) or (N > self._cap_h_N):
+            self._h_lengths = cuda.pinned_array((self._cap_h_N,), dtype=np.int32)
 
     def solve(self, findAll: bool = False, printSol: bool = True):
         self._findAll = findAll
@@ -225,9 +288,9 @@ class PuzzleSolver:
             pos = board.nextAvailablePos()
             if pos is None:
                 return solutions
-
-            offsets, lengths, meta = _encode_candidates(pieces, len(board._board[0]))
-            N = lengths.shape[0]
+            # Encode candidates for current level
+            offsets_list, lengths_list, meta, max_len = _encode_candidates(pieces, len(board._board[0]))
+            N = len(lengths_list)
             if N == 0:
                 return solutions
 
@@ -238,16 +301,18 @@ class PuzzleSolver:
 
             self._nbTries += N
 
-            h_offsets = np.ascontiguousarray(offsets)
-            h_lengths = np.ascontiguousarray(lengths)
-            h_mask = np.ascontiguousarray(mask)
+            # Ensure host buffers
+            self._ensure_host_buffers(N, max_len)
+            for i, offs in enumerate(offsets_list):
+                self._h_offsets[i, : len(offs)] = offs
+            self._h_lengths[:N] = lengths_list
 
             # Ensure and fill device buffers
-            self._ensure_buffers(N, h_offsets.shape[1])
-            h_offsets_flat = h_offsets.reshape(N * h_offsets.shape[1])
-            self._d_offsets_flat[: N * h_offsets.shape[1]].copy_to_device(h_offsets_flat)
-            self._d_lengths[:N].copy_to_device(h_lengths)
-            self._d_mask_words.copy_to_device(h_mask)
+            self._ensure_buffers(N, max_len)
+            h_offsets_flat = self._h_offsets[:N, :max_len].reshape(N * max_len)
+            self._d_offsets_flat[: N * max_len].copy_to_device(h_offsets_flat)
+            self._d_lengths[:N].copy_to_device(self._h_lengths[:N])
+            self._d_mask_words.copy_to_device(mask)
 
             threads_per_block = 512  # larger block size for better occupancy
             blocks = (N + threads_per_block - 1) // threads_per_block
@@ -255,7 +320,7 @@ class PuzzleSolver:
             _kernel_check_candidates[blocks, threads_per_block](
                 self._d_mask_words, width, height, base_idx,
                 self._d_offsets_flat,
-                h_offsets.shape[1],
+                max_len,
                 self._d_lengths[:N],
                 self._d_valids[:N]
             )
